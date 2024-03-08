@@ -14,4 +14,10 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    function get($option) {
+        //var_dump($option);
+        $result = $this->db->get_where('user', array('email' => $option['email']))->row();
+        //var_dump($this->db->last_query());
+        return $result;
+    }
 }

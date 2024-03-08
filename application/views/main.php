@@ -1,3 +1,11 @@
+<?php
+if ($this->session->flashdata('message')) { ?>
+    <script type='text/javascript'>
+        alert('<?=$this->session->flashdata('message')?>');
+    </script>
+<?php
+}
+?>
 <style>
     .my-container {
         display: flex;

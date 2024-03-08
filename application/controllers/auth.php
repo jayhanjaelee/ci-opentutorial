@@ -30,7 +30,7 @@ class Auth extends My_Controller {
             if (!function_exists('password_hash')) {
                 $this->load->helper('password');
             }
-            $hash = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
+            $hash = password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost'=>12]);
 
             $this->load->model('user_model');
             $this->user_model->add(array(
@@ -41,7 +41,7 @@ class Auth extends My_Controller {
 
             $this->session->set_flashdata('message', '회원가입에 성공했습니다.');
             $this->load->helper('url');
-            redirect('http://localhost/ci-opentutorial/index.php');
+            redirect($this->config->item('base_url'));
         }
 
         $this->_footer();
@@ -60,22 +60,29 @@ class Auth extends My_Controller {
         $this->session->unset_userdata('is_login');
         
         $this->load->helper('url');
-        redirect('http://localhost/ci-opentutorial/index.php/auth/login');
+        redirect($this->config->item('base_url') . '/auth/login');
     }
 
     public function authentication() {
-        $authentication = $this->config->item('authentication');
+        $this->load->helper('form');
+        $this->load->model('user_model');
+        $user = $this->user_model->get(array(
+            'email' => $this->input->post('email')
+        ));
+
         if (
-            $this->input->post('id') == $authentication['id'] &&
-            $this->input->post('password') == $authentication['password']
+            // db 에서 데이터 가져오게 변경
+            $this->input->post('email') == $user->email &&
+            password_verify($this->input->post('password'), $user->password)
         ) {
+            $this->session->set_flashdata('message', '로그인에 성공했습니다');
             $this->session->set_userdata('is_login', true);
             $this->load->helper('url');
-            redirect('http://localhost/ci-opentutorial/index.php/topic/add');
+            redirect($this->config->item('base_url'));
         } else {
             $this->session->set_flashdata('message', '로그인에 실패 했습니다.');
             $this->load->helper('url');
-            redirect('http://localhost/ci-opentutorial/index.php/auth/login');
+            redirect($this->config->item('base_url') . '/auth/login');
         }
     }
 }
