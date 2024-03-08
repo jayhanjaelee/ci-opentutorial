@@ -31,7 +31,7 @@
             <?php
             foreach ($topics as $entry) {
             ?>
-                <li class="list-group-item nav-item"><a class="nav-link" href="<?= $this->config->base_url() . 'topic/get/' . $entry->id ?>"><?= $entry->title ?></a></li>
+                <li class="list-group-item nav-item"><a class="nav-link" href="<?= $this->config->base_url() . 'topic/' . $entry->id ?>"><?= $entry->title ?></a></li>
             <?php
             }
             ?>

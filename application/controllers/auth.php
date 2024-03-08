@@ -22,7 +22,6 @@ class Auth extends My_Controller {
         $this->form_validation->set_rules('password', '비밀번호', 'required|min_length[6]|max_length[30]|matches[re_password]');
         $this->form_validation->set_rules('re_password', '패스워드 확인', 'required');
 
-
         if($this->form_validation->run() === false) {
             $this->load->view('register');
         } else {

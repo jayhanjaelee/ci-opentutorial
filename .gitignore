@@ -1,5 +1,7 @@
 .DS_Store
 
+static/files
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db

@@ -6,15 +6,17 @@
     }
  </style>
 
+<!-- topic start -->
  <div class="topic-container border border-1 border-primary container">
      <div class="row">
-         <div class="col-md-8">
+         <div class="col-md-8"></div>
              <div class="content p-3">
-                <button type="button" class="btn btn-primary mb-3">글 작성</button>
+               <a class="btn btn-primary" href="<?=$this->config->base_url() . '/topic/add'?>">글작성</a>
                 <div>
                     <h1>제목: <?= $topic->title ?></h1>
                 </div>
-                 <p><?= $topic->description ?></p>
+                <div><?=kdate($topic->created)?></div>
+                 <?=auto_link($topic->description)?>
              </div>
          </div>
      </div>
