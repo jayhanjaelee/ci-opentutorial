@@ -37,7 +37,7 @@ class Topic extends My_Controller {
         // 로그인 되어있지 않으면 로그인 페이지로 리다이렉션
         if (!$this->session->userdata('is_login')) {
             $this->load->helper('url');
-            redirect($this->config->base_url() . 'auth/login');
+            redirect($this->config->base_url() . 'auth/login?returnURL=' . rawurlencode(site_url('/topic/add')));
         }
 
         // load library
@@ -45,8 +45,8 @@ class Topic extends My_Controller {
 
         $this->form_validation->set_rules('title', '제목', 'required');
         if ($this->form_validation->run() == FALSE) {
-            $topics = $this->topic_model->gets();
             $title = 'Topic Add Page';
+            $topics = $this->topic_model->gets();
             $this->_head($title);
             $this->load->view('topics', array('topics', 'topics' => $topics));
             $this->load->view('add');
@@ -56,8 +56,13 @@ class Topic extends My_Controller {
                 $this->input->post('description'),
             );
 
-            $this->load->helper('url');
+            // $this->_send_email();
+            // $this->load->helper('url');
+
             redirect($this->config->base_url() . 'topic/' . $topic_id);
+            // Batch Queue에 notify_email_add_topic 추가
+            $this->load->model('batch_model');
+            $this->batch_model->add(array('job_name' => 'notify_email_add_topic', 'context'=>json_encode(array('topic_id'=>$topic_id))));
         }
 
         $this->_footer();
@@ -90,5 +95,19 @@ class Topic extends My_Controller {
         $this->_head($title);
         $this->load->view('upload_form');
         $this->_footer();
+    }
+
+    private function _send_email() {
+        $this->load->model('user_model');
+        $this->load->library('email');
+        $this->email->initialize(array('mailtype' => 'html'));
+        $users = $this->user_model->gets();
+        foreach ($users as $user) {
+            $this->email->from('jayhanjaelee@gmail.com', 'hanjaelee');
+            $this->email->to($user->email);
+            $this->email->subject('새로운 글이 등록되었습니다.');
+            $this->email->message('<a href="' . site_url('/topic/get/' . $topic_id) . '">' . $this->input->post('title') . '</a>');
+            $this->email->send();
+        }
     }
 }

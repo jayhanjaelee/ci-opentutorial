@@ -15,7 +15,16 @@
             </div>
 
             <div class="modal-body p-5 pt-0">
-                <form class="" action="/ci-opentutorial/index.php/auth/authentication" method="post">
+                <?php
+                if (empty($returnURL)) {
+                    $url = base_url() . 'auth/authentication';
+                } else {
+                    $params = '?returnURL=' . $returnURL;
+                    $url = 'http://localhost/ci-opentutorial/index.php' . $params;
+                }
+                ?>
+                <form class="" action=<?=$url?> method="post">
+                <!-- <form class="" action="/index.php/auth/authentication<?=empty($returnURL) ? '/ci-opentutorial/index.php' : '?returnURL=' . rawurlencode($returnURL) ?>" method="post"> -->
                     <div class="form-floating mb-3">
                         <input type="" class="form-control rounded-3" name="email" email="email" placeholder="이메일">
                         <label for="id">아이디</label>
